@@ -1,0 +1,35 @@
+[{"q": "Is this picture a photograph, painting, anime, cartoon, or render?",
+             "branches": {"painting": {"q": "what is the style of this painting?", "template": "a {} style painting"},
+                 "default": "a {}"}},
+            {"q": "Would you describe this shot as: extreme close up, closeup, medium, long, arial, point of view?", "template": "{} shot of"},
+            {"q": "Is the subject of this photo a person, place, thing, animal, or something else?",
+             "template": "{}. ",
+             "branches": {"thing":  {"q": "what is a good detailed summary of the thing?"},
+                          "animal": {"q": "please describe the animal?"},
+                          "place":  {"q": "what is a good detailed summary of the picture?"},
+                          "person": [{"q": "please describe this person?"},
+                                     {"q": "what is the person wearing?", "template": "wearing {}"},
+                                     {"q": "Can you tell if the person standing, leaning, sitting, laying down?"},
+                                     {"q": "yes or no, are the persons arms and hands visible?",
+                                      "branches": {"yes": [
+                                          {"q": "In what position are the person's arms?", "template": "arms {}"},
+                                          {"q": "Yes or no, is the person holding something?",
+                                           "branches": {
+                                               "yes": {"q": "what is in the person's hands?", "template": "holding {}"},
+                                               "default": ""}}],
+                                                   "default": ""}
+                                      },
+                                     ]
+                          },
+             "join": ", "},
+            {"q": "Is the scene inside or outside?",
+             "branches": {"inside": {"q": "are there other items in the room besides the subject?",
+                                     "branches": {
+                                         "yes": [{"q": "what other items?", "template": "the room contains {}."}],
+                                         "default": ""}},
+                          "outside": [{"q": "What is behind the subject?", "template": "in front of {}."},
+                                      {"q": "Is it morning, daytime, or nighttime?", "template": "it is {}."}]}
+             },
+            {"q": "What are up to three key colors in this picture?", "template": "colors: {}."},
+            {"q": "Is the subject in focus or blurry?", "template": "subject is {}."},
+            ]
