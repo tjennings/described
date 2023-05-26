@@ -51,7 +51,8 @@ class Inquisitor:
             response = self._process_node(image, context, node)
             if response:
                 responses.append(response.strip())
-        return ' '.join(responses)
+        join_str = node.get("join", ' ')
+        return join_str.join(responses)
 
     def _process_node(self, image: torch.Tensor, context: List[Tuple[str, str]], node: Node) -> str:
         answer, context = self._query(image, context, node)
