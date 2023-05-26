@@ -118,8 +118,8 @@ class ImageDataset(Dataset):
     def __getitem__(self, idx):
         path = self.paths[idx]
 
-        if args.resize is not None:
-            self.resize_and_save(path)
+        if self.args.resize is not None:
+            self.resize_and_save(path, self.args.resize)
 
         raw_image = self.resize_image(Image.open(path).convert("RGB"), 768)
         #raw_image = Image.open(path).convert("RGB")
@@ -127,9 +127,9 @@ class ImageDataset(Dataset):
         return {"image": processed, "caption_path": self.caption_path(path)}
 
     @staticmethod
-    def resize_and_save(path):
+    def resize_and_save(path, resize):
         img = Image.open(path)
-        ImageDataset.resize_image(img, args.resize).save(path)
+        ImageDataset.resize_image(img, resize).save(path)
 
     @staticmethod
     def resize_image(image, target_size):
