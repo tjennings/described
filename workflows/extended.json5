@@ -3,7 +3,7 @@
      "template": "This is {}.",
      "branches": {"painting": {"q": "What style does this painting belong to?", "template": "a {} style painting"},
                   "anime": {"q": "What anime style is depicted in the image?", "template": " {} style"},
-                  "default": "{}"}},
+                  "template": "{}"}},
     {"q": "What is the composition of the shot: extreme close up, closeup, medium, long, arial, point of view?",
      "template": "{} shot"},
     {"q": "What is the subject of this image: person, place, thing, animal, or abstract?",

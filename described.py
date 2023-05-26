@@ -16,7 +16,7 @@ class Node:
         self.data = data
 
     def get_template(self) -> str:
-        return self.data.get("template", "{}")
+        return self.get("template", "{}")
 
     def get_question(self) -> str:
         return self.data["q"]
@@ -115,8 +115,7 @@ class ImageDataset(Dataset):
         if args.resize is not None:
             self.resize_and_save(path)
 
-        #raw_image = self.resize_image(Image.open(path).convert("RGB"), 1600)
-        raw_image = Image.open(path).convert("RGB")
+        raw_image = self.resize_image(Image.open(path).convert("RGB"), 768)
         #raw_image = Image.open(path).convert("RGB")
         processed = self.vis_processors["eval"](raw_image).unsqueeze(0)
         return {"image": processed, "caption_path": self.caption_path(path)}

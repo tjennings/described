@@ -1,6 +1,6 @@
 [{"q": "Is this picture a photograph, painting, anime, cartoon, or render?",
   "branches": {"painting": {"q": "what is the style of this painting?", "template": "a {} style painting"},
-               "default": "a {}"}},
+               "template": "a {}"}},
  {"q": "Would you describe this shot as: extreme close up, closeup, medium, long, arial, point of view?",
   "template": "{} shot of"},
  {"q": "Is the subject of this photo a person, place, thing, animal, or something else?",
@@ -17,7 +17,8 @@
   "branches": {"inside": {"q": "are there other items in the room besides the subject?",
                           "branches": {
                               "yes": [{"q": "what other items?", "template": "in a room with a {}."}],
-                              "default": ""}},
+                              },
+                          "template": ""},
                "outside": [{"q": "Is it bright and sunny or overcast?", "template": "it is {}."}]}},
  {"q": "What are up to three key colors in this picture?", "template": "colors: {}."},
  {"q": "Is the subject in focus or blurry?", "template": "subject is {}."},
