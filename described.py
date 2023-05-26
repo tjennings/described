@@ -116,8 +116,8 @@ if __name__ == "__main__":
                                                                                   "blip2_t5(pretrain_flant5xl, caption_coco_flant5xl, pretrain_flant5xxl), "
                                                                                   "blip2(pretrain, coco)")
     args.add_argument("--path", type=str, required=True, help="Path to images to be captioned")
-    args.add_argument("--prefix", type=str, default="blip2_t5", help="a string applied at the beginning of each caption")
-    args.add_argument("--suffix", type=str, default="blip2_t5", help="a string applied at the end of each caption")
+    args.add_argument("--prefix", type=str, help="a string applied at the beginning of each caption")
+    args.add_argument("--suffix", type=str, help="a string applied at the end of each caption")
     args = args.parse_args()
 
     main(args)
