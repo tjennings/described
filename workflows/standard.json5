@@ -8,20 +8,17 @@
   "branches": {"thing":  {"q": "what is a good detailed summary of the thing?"},
               "animal": {"q": "please describe the animal?"},
               "place":  {"q": "what is a good detailed summary of the picture?"},
-              "person": [{"q": "please describe this person?"},
+              "person": [{"q": "write a lengthy detailed description of this person, as if for a novel"},
                          {"q": "what is the person wearing?", "template": "wearing {}"},
-                         {"q": "what emotion is the person showing?", "template": "feeling {}"},
-                         {"q": "Can you tell if the person standing, leaning, sitting, laying down?"},
-                         ]
+                         {"q": "what emotion is the person showing?", "template": "feeling {}"}]
               },
   "join": ", "},
  {"q": "Is the scene inside or outside?",
   "branches": {"inside": {"q": "are there other items in the room besides the subject?",
                           "branches": {
-                              "yes": [{"q": "what other items?", "template": "the room contains {}."}],
+                              "yes": [{"q": "what other items?", "template": "in a room with a {}."}],
                               "default": ""}},
-               "outside": [{"q": "What is behind the subject?", "template": "in front of {}."},
-                           {"q": "Is it morning, daytime, or nighttime?", "template": "it is {}."}]}},
+               "outside": [{"q": "Is it bright and sunny or overcast?", "template": "it is {}."}]}},
  {"q": "What are up to three key colors in this picture?", "template": "colors: {}."},
  {"q": "Is the subject in focus or blurry?", "template": "subject is {}."},
 ]

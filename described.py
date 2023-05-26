@@ -117,13 +117,15 @@ def main(args):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser("described")
-    parser.add_argument("--workflow", type=str, default="./workflows/standard.json5", help="The workflow file to use")
-    parser.add_argument("--model_name", type=str, default="blip2_t5", help="One of: blip2_opt, blip2_t5, blip2")
-    parser.add_argument("--model_type", type=str, default="pretrain_flant5xl", help="A compatible model type.")
-    parser.add_argument("--path", type=str, required=True, help="Path to images to be captioned")
-    parser.add_argument("--prefix", type=str, default="", help="a string applied at the beginning of each caption")
-    parser.add_argument("--suffix", type=str, default="", help="a string applied at the end of each caption")
+    args = argparse.ArgumentParser("described")
+    args.add_argument("--workflow", type=str, default="./workflows/standard.json5", help="The workflow file to use")
+    args.add_argument("--model_name", type=str, default="blip2_t5", help="One of: blip2_opt, blip2_t5, blip2")
+    args.add_argument("--model_type", type=str, default="pretrain_flant5xl", help="A compatible model type. One of: blip2_opt(pretrain_opt2.7b, caption_coco_opt2.7b, pretrain_opt6.7b, caption_coco_opt6.7b), "
+                                                                                  "blip2_t5(pretrain_flant5xl, caption_coco_flant5xl, pretrain_flant5xxl), "
+                                                                                  "blip2(pretrain, coco)")
+    args.add_argument("--path", type=str, required=True, help="Path to images to be captioned")
+    args.add_argument("--prefix", type=str, help="a string applied at the beginning of each caption")
+    args.add_argument("--suffix", type=str, help="a string applied at the end of each caption")
+    args = args.parse_args()
 
-    args = parser.parse_args()
     main(args)
