@@ -76,8 +76,9 @@ class Inquisitor:
         prompt = ", ".join([template.format(q, a) for q, a in context]) + f" Question: {question} Answer:"
         answer = self.model.generate({"image": image, "prompt": prompt})[0].lower()
         answer = self._deduplicate(answer)
-        context.append((question, answer))
-        return answer, context
+
+        print(f"{prompt}, {answer}")
+        return answer, context + [(question, answer)]
 
     @staticmethod
     def _deduplicate(answer: str) -> str:
