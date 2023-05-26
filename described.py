@@ -97,7 +97,13 @@ class ImageDataset(Dataset):
         self.vis_processors = vis_processors
 
         image_paths = glob.glob(os.path.join(args.path, '**/*.*'), recursive=True)
-        self.paths = [p for p in image_paths if p.endswith(('jpg', 'jpeg', 'png', 'webp')) and not self.caption_exists(p)]
+
+        if args.overwrite:
+            self.paths = [p for p in image_paths if
+                          p.endswith(('jpg', 'jpeg', 'png', 'webp'))]
+        else:
+            self.paths = [p for p in image_paths if p.endswith(('jpg', 'jpeg', 'png', 'webp'))
+                          and not self.caption_exists(p)]
 
     def __len__(self):
         return (len(self.paths))
@@ -147,6 +153,7 @@ if __name__ == "__main__":
                                                                                   "blip2_t5(pretrain_flant5xl, caption_coco_flant5xl, pretrain_flant5xxl), "
                                                                                   "blip2(pretrain, coco)")
     args.add_argument("--path", type=str, required=True, help="Path to images to be captioned")
+    args.add_argument("--overwrite", default=False, action="store_true", help="Overwrite existing captions")
     args.add_argument("--prefix", type=str, help="a string applied at the beginning of each caption")
     args.add_argument("--suffix", type=str, help="a string applied at the end of each caption")
     args = args.parse_args()
