@@ -77,7 +77,7 @@ class Inquisitor:
         answer = self.model.generate({"image": image, "prompt": prompt})[0].lower()
         answer = self._deduplicate(answer)
 
-        print(f"{prompt}, {answer}")
+        #print(f"{prompt}, {answer}")
         return answer, context + [(question, answer)]
 
     @staticmethod
