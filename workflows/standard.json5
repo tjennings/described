@@ -10,16 +10,8 @@
               "place":  {"q": "what is a good detailed summary of the picture?"},
               "person": [{"q": "please describe this person?"},
                          {"q": "what is the person wearing?", "template": "wearing {}"},
+                         {"q": "what emotion is the person showing?", "template": "feeling {}"},
                          {"q": "Can you tell if the person standing, leaning, sitting, laying down?"},
-                         {"q": "yes or no, are the persons arms and hands visible?",
-                          "branches": {"yes": [
-                              {"q": "In what position are the person's arms?", "template": "arms {}"},
-                              {"q": "Yes or no, is the person holding something?",
-                               "branches": {
-                                   "yes": {"q": "what is in the person's hands?", "template": "holding {}"},
-                                   "default": ""}}],
-                                       "default": ""}
-                          },
                          ]
               },
   "join": ", "},

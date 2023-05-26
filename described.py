@@ -1,6 +1,8 @@
 import argparse
 import glob
 import os
+from collections import OrderedDict
+
 import json5
 from functools import partial
 
@@ -15,21 +17,19 @@ class Inquisitor():
         self.workflow = workflow
         self.model = model
         self.args = args
+        self.prefix = args.prefix or ""
+        self.suffix = args.suffix or ""
 
     def ask(self, image):
-        return self.__ask(image, [], self.workflow)
+        answer = self.__ask(image, [], self.workflow)
+        return f"{self.prefix} {answer} {self.suffix}"
+
 
     def __ask(self, image, context, node):
         if isinstance(node, list):
             return ' '.join(map(partial(self.__ask, image, context), node))
 
-        template = "Question: {}, Answer: {}"
-        question = node["q"]
-        prompt = ", ".join([template.format(context[i][0], context[i][1]) for i in
-                            range(len(context))]) + " Question: " + question + " Answer:"
-        # prompt = " Question: " + question + " Answer:"
-        answer = self.model.generate({"image": image, "prompt": prompt})[0].lower()
-        context = context + [[question, answer]]
+        answer, context = self.query(context, image, node)
         # print(f"q: {prompt}, a: {answer}")
 
         if "branches" in node:
@@ -54,6 +54,26 @@ class Inquisitor():
                 return node["template"].format(answer)
             else:
                 return answer
+
+    def query(self, context, image, node):
+        template = "Question: {}, Answer: {}"
+        question = node["q"]
+        prompt = ", ".join([template.format(context[i][0], context[i][1]) for i in
+                            range(len(context))]) + " Question: " + question + " Answer:"
+        # prompt = " Question: " + question + " Answer:"
+        answer = self.model.generate({"image": image, "prompt": prompt})[0].lower()
+        answer = self.dedup(answer)
+        context = context + [[question, answer]]
+        return answer, context
+
+    def dedup(self, answer):
+        phrases = answer.split(" ")
+        # Use an OrderedDict to remove duplicates while preserving order
+        unique_phrases = list(OrderedDict.fromkeys(phrases))
+        # Join the phrases back into a string
+        answer = " ".join(unique_phrases)
+        return answer
+
 
 def main(args):
     device = torch.device("cuda") if torch.cuda.is_available() else "cpu"
@@ -96,6 +116,8 @@ if __name__ == "__main__":
                                                                                   "blip2_t5(pretrain_flant5xl, caption_coco_flant5xl, pretrain_flant5xxl), "
                                                                                   "blip2(pretrain, coco)")
     args.add_argument("--path", type=str, required=True, help="Path to images to be captioned")
+    args.add_argument("--prefix", type=str, default="blip2_t5", help="a string applied at the beginning of each caption")
+    args.add_argument("--suffix", type=str, default="blip2_t5", help="a string applied at the end of each caption")
     args = args.parse_args()
 
     main(args)

@@ -6,7 +6,7 @@ This is a useful tool I created to generate improved captions for my stable diff
 # Installation
 
 NOTE:  The blip2 models are VERY large, ensure you have at least 60gb of free disk space on your root drive.
-Huggingface will be default store the models in ~/.cache/huggingface.
+Huggingface will by default store the models in ~/.cache/huggingface.
 
 ```python -m venv venv
 source ./venv/bin/activate
@@ -16,7 +16,7 @@ pip install -r requirements.txt
 # Usage
 
 ```
-usage: described [-h] [--workflow WORKFLOW] [--model_name MODEL_NAME] [--model_type MODEL_TYPE] --path PATH
+usage: described [-h] [--workflow WORKFLOW] [--model_name MODEL_NAME] [--model_type MODEL_TYPE] --path PATH [--prefix PREFIX] [--suffix SUFFIX]
 
 options:
   -h, --help            show this help message and exit
@@ -27,6 +27,8 @@ options:
                         A compatible model type. One of: blip2_opt(pretrain_opt2.7b, caption_coco_opt2.7b, pretrain_opt6.7b, caption_coco_opt6.7b), blip2_t5(pretrain_flant5xl,
                         caption_coco_flant5xl, pretrain_flant5xxl), blip2(pretrain, coco)
   --path PATH           Path to images to be captioned
+  --prefix PREFIX       a string applied at the beginning of each caption
+  --suffix SUFFIX       a string applied at the end of each caption
 ```
 
 
@@ -50,3 +52,11 @@ See [The Standard Workflow](https://github.com/tjennings/described/blob/main/wor
 These are early days and I would be very happy to have you help expanding the capabilities of described! 
 Most importantly, we need more comprehensive workflows and these can be built by anyone, regardless of technical skills,
 with a bit of patience.  To contribute fork this repository and send me a pull request with your changes.  
+
+# Caveats
+
+* Hand-crafted captions will remain far superior to those generated automatically, including this tool.  Where described shines 
+is generating captions for large fine-tuning data sets.  Thousands of images or more.  
+* This tool is ulimately limited by the capabilities of the model and what the model understands.  Sometimes you must
+accept the model is not capable of discerning many kinds of details.  
+* Expect several hours to generate 10k captions on a fast GPU, like a 4090.  
