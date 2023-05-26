@@ -23,6 +23,8 @@ class Node:
     def get_branches(self) -> Dict[str, Any]:
         return self.data.get("branches", {})
 
+    def get(self, key: str, default: Any = None) -> Any:
+        return self.data.get(key, default)
 
 class Workflow:
     def __init__(self, nodes: List[Node]):
