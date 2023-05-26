@@ -8,9 +8,18 @@
   "branches": {"thing":  {"q": "what is a good detailed summary of the thing?"},
               "animal": {"q": "please describe the animal?"},
               "place":  {"q": "what is a good detailed summary of the picture?"},
-              "person": [{"q": "write a lengthy detailed description of this person, as if for a novel"},
-                         {"q": "what is the person wearing?", "template": "wearing {}"},
-                         {"q": "what emotion is the person showing?", "template": "feeling {}"}]
+              "person": [{"q": "Is this person a man, woman, boy, or girl?"},
+                         {"q": "what is this person doing?", "template":  "{}. "},
+                         {"q": "describe this person's face?", "template": "{} face,"},
+                         {"q": "describe this person's eyes?", "template": "{} eyes,"},
+                         {"q": "describe this person's lips?", "template": "{} lips,"},
+                         {"q": "describe this person's body?", "template": "{} body,"},
+                         {"q": "describe this person's skin?", "template": "{} skin,"},
+                         {"q": "Are this person's hands visible?", "template": "",
+                           "branches": {"yes": {"q": "describe this person's hands?", "template": "{} hands,"}}
+                         },
+                         {"q": "what is the person wearing?", "template": "wearing {},"},
+                         {"q": "what emotion is the person showing?", "template": "feeling {}."}]
               },
   "join": ", "},
  {"q": "Is the scene inside or outside?",

@@ -67,17 +67,23 @@ class Inquisitor:
                 return self._traverse_workflow(image, context, [Node(b) for b in branch])
             else:
                 return self._process_node(image, context, Node(branch))
+        elif not answer:
+            return ""
         else:
             return node.get_template().format(answer)
 
     def _query(self, image: torch.Tensor, context: List[Tuple[str, str]], node: Node) -> Tuple[str, List[Tuple[str, str]]]:
-        template = "Question: {}, Answer: {}"
+        template = "Question: {}, Answer: {}."
         question = node.get_question()
-        prompt = ", ".join([template.format(q, a) for q, a in context]) + f" Question: {question} Answer:"
+        prompt = " ".join([template.format(q, a) for q, a in context]) + f" Question: {question} Answer:"
         answer = self.model.generate({"image": image, "prompt": prompt})[0].lower()
         answer = self._deduplicate(answer)
 
-        #print(f"{prompt}, {answer}")
+        #print(f"{prompt} {answer}")
+
+        #if 'not enough information' in answer:
+        #    raise Exception("Not enough information response")
+
         return answer, context + [(question, answer)]
 
     @staticmethod
