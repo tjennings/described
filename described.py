@@ -86,7 +86,7 @@ def load_workflow(file_path: str) -> Workflow:
 
 
 def main(args):
-    device = torch.device("cuda") if torch.is_available() else torch.device("cpu")
+    device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
     model, vis_processors, _ = load_model_and_preprocess(name=args.model_name, model_type=args.model_type, is_eval=True, device=device)
 
     workflow = load_workflow(args.workflow)
