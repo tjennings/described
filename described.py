@@ -110,9 +110,47 @@ class ImageDataset(Dataset):
 
     def __getitem__(self, idx):
         path = self.paths[idx]
+
+        if args.resize is not None:
+            self.resize_and_save(path)
+
+        #raw_image = self.resize_image(Image.open(path).convert("RGB"), 1600)
         raw_image = Image.open(path).convert("RGB")
+        #raw_image = Image.open(path).convert("RGB")
         processed = self.vis_processors["eval"](raw_image).unsqueeze(0)
         return {"image": processed, "caption_path": self.caption_path(path)}
+
+    @staticmethod
+    def resize_and_save(path):
+        img = Image.open(path)
+        ImageDataset.resize_image(img, args.resize).save(path)
+
+    @staticmethod
+    def resize_image(image, target_size):
+        # Get the current width and height of the image
+        width, height = image.size
+
+        # Check which dimension (width or height) is the maximum
+        max_dimension = max(width, height)
+
+        # If the image is smaller than target, abort
+        if max(width, height) <= target_size:
+            return image
+
+        # Calculate the scale factor to resize the image
+        scale_factor = 1
+        if max_dimension > target_size:
+            scale_factor = target_size / max_dimension
+
+        # Calculate the new width and height using the scale factor
+        new_width = int(width * scale_factor)
+        new_height = int(height * scale_factor)
+
+        # Resize the image while maintaining the aspect ratio
+        resized_image = image.resize((new_width, new_height))
+
+        # Return the resized image
+        return resized_image
 
     @staticmethod
     def collate_fn(batch):
@@ -156,6 +194,7 @@ if __name__ == "__main__":
     args.add_argument("--overwrite", default=False, action="store_true", help="Overwrite existing captions")
     args.add_argument("--prefix", type=str, help="a string applied at the beginning of each caption")
     args.add_argument("--suffix", type=str, help="a string applied at the end of each caption")
+    args.add_argument("--resize", type=int, help="additionally, resize and save the image where the longest side is the provided maximum ")
     args = args.parse_args()
 
     main(args)
