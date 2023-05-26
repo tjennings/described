@@ -5,6 +5,7 @@ import json5
 import torch
 from PIL import Image
 from lavis.models import load_model_and_preprocess
+from torch.utils.data import Dataset, DataLoader
 from tqdm import tqdm
 from typing import List, Any, Tuple, Union, Dict
 from collections import OrderedDict
@@ -82,6 +83,35 @@ class Inquisitor:
     def _deduplicate(answer: str) -> str:
         return " ".join(OrderedDict.fromkeys(answer.split(" ")))
 
+class ImageDataset(Dataset):
+    def caption_path(self, path):
+        return os.path.join(os.path.dirname(path), f"{os.path.basename(path).split('.')[0]}.txt")
+
+    def caption_exists(self, path):
+        caption_path = self.caption_path(path)
+        return os.path.exists(caption_path)
+
+    def __init__(self, dir, vis_processors, args):
+        self.dir = dir
+        self.args = args
+        self.vis_processors = vis_processors
+
+        image_paths = glob.glob(os.path.join(args.path, '**/*.*'), recursive=True)
+        self.paths = [p for p in image_paths if p.endswith(('jpg', 'jpeg', 'png', 'webp')) and not self.caption_exists(p)]
+
+    def __len__(self):
+        return (len(self.paths))
+
+    def __getitem__(self, idx):
+        path = self.paths[idx]
+        raw_image = Image.open(path).convert("RGB")
+        processed = self.vis_processors["eval"](raw_image).unsqueeze(0)
+        return {"image": processed, "caption_path": self.caption_path(path)}
+
+    @staticmethod
+    def collate_fn(batch):
+        return batch
+
 
 def load_workflow(file_path: str) -> Workflow:
     with open(file_path, 'r') as f:
@@ -95,25 +125,18 @@ def main(args):
     workflow = load_workflow(args.workflow)
     inquisitor = Inquisitor(workflow, model, args)
 
-    image_paths = glob.glob(os.path.join(args.path, '**/*.*'), recursive=True)
-    image_paths = [p for p in image_paths if p.endswith(('jpg', 'jpeg', 'png', 'webp'))]
+    dataset = ImageDataset(args.path, vis_processors, args)
+    loader = DataLoader(dataset, batch_size=1, num_workers=5, collate_fn=ImageDataset.collate_fn)
 
-    for path in tqdm(image_paths):
-        caption_path = os.path.join(os.path.dirname(path), f"{os.path.basename(path).split('.')[0]}.txt")
-
-        if os.path.exists(caption_path):
-            print(f"Skipping, caption exists for {path}")
-            continue
+    for batch in tqdm(loader):
+        image, caption_path = batch[0]["image"], batch[0]["caption_path"]
 
         try:
-            raw_image = Image.open(path).convert("RGB")
-            image = vis_processors["eval"](raw_image).unsqueeze(0).to(device)
-
-            answer = inquisitor.ask(image)
+            answer = inquisitor.ask(image.to(device))
             with open(caption_path, "w") as f:
                 f.write(answer)
         except Exception as e:
-            print(f"Failed to process {path}, {str(e)}")
+            print(f"Failed to process {caption_path}, {str(e)}")
 
 
 if __name__ == "__main__":
